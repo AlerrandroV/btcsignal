@@ -108,7 +108,7 @@ nohup bash main.sh > bot.log 2>&1 &
 | `ShellBot.sh` | API em Bash para o Telegram ([shellscriptx/ShellBot](https://github.com/shellscriptx/ShellBot)) |
 | `commands/` | Scripts dos comandos do bot (`/start`, ...) |
 | `trader.sh` | Experimento à parte: um simulador de compra/venda no terminal, sem dinheiro real |
-| `teste.sh` | Script de teste que copia as mensagens recebidas para os administradores |
+| `teste.sh` | Script de teste que encaminha as mensagens recebidas para os administradores |
 
 ## Fontes dos dados
 
