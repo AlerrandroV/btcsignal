@@ -19,20 +19,37 @@ publi_text="${publi_text#"${publi_text%%[![:space:]]*}"}"   # remove espaços no
 reply_id="${message_reply_to_message_message_id[$id]}"
 reply_text="${message_reply_to_message_text[$id]}"
 
+# Avisa o administrador do resultado. Em caso de erro, manda também a explicação.
+report_publi() {
+	if (( $1 == 0 )); then
+		send_message "$admin_chat" "$2"
+	else
+		send_message "$admin_chat" "✗ Não consegui publicar no canal.
+
+${LAST_ERROR}"
+	fi
+}
+
 if [[ -n $publi_text ]]; then
-	ShellBot.sendMessage --chat_id "$channel_id" --text "$publi_text" &&
-		ShellBot.sendMessage --chat_id "$admin_chat" --text "✓ Publicado no canal."
+	send_message "$channel_id" "$publi_text"
+	report_publi $? "✓ Publicado no canal."
 
 elif [[ -n $reply_id && -n $reply_text ]]; then
-	ShellBot.sendMessage --chat_id "$channel_id" --text "$reply_text" &&
-		ShellBot.sendMessage --chat_id "$admin_chat" --text "✓ Publicado no canal."
+	send_message "$channel_id" "$reply_text"
+	report_publi $? "✓ Publicado no canal."
 
 elif [[ -n $reply_id ]]; then
-	ShellBot.forwardMessage --chat_id "$channel_id" --from_chat_id "$admin_chat" --message_id "$reply_id" &&
-		ShellBot.sendMessage --chat_id "$admin_chat" --text "✓ Encaminhado para o canal."
+	LAST_ERROR=""
+	if ! forward_output=$(ShellBot.forwardMessage --chat_id "$channel_id" --from_chat_id "$admin_chat" --message_id "$reply_id" 2>&1 >/dev/null); then
+		LAST_ERROR=$(explain_telegram_error "$forward_output" "$channel_id")
+		log "Não foi possível encaminhar a mensagem para o canal."
+		sed 's/^/    /' <<< "$LAST_ERROR" >&2
+		false
+	fi
+	report_publi $? "✓ Encaminhado para o canal."
 
 else
-	ShellBot.sendMessage --chat_id "$admin_chat" --text "Uso:
+	send_message "$admin_chat" "Uso:
 /publi Seu texto aqui
 ou responda a uma mensagem com /publi"
 fi

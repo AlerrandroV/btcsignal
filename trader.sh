@@ -1,5 +1,20 @@
 #!/bin/bash
 
+# Simulador de compra e venda no terminal (sem dinheiro real).
+# Durante a execução: aperte "b" para forçar uma compra ou "s" para uma venda.
+
+if [ -z "$BASH_VERSION" ]; then
+	echo "✗ Este script precisa ser executado com o bash. Rode assim:  bash trader.sh" >&2
+	exit 1
+fi
+
+cd "$(dirname "${BASH_SOURCE[0]}")" || exit 1
+
+# Verifica se os programas necessários estão instalados (com explicação se faltar)
+source checks.sh
+check_bash_version || exit 1
+check_dependencies curl jq bc || exit 1
+
 # Configurações iniciais
 API_URL="https://cointradermonitor.com/api/pbb/v1/ticker?exchanges=true"
 SALDO_BRL=100            # Saldo inicial em BRL (R$100)
@@ -16,7 +31,7 @@ TEMPO_ANTECIPACAO=2      # Tempo de antecipação (em segundos) para não fazer 
 
 # Função para obter os dados da API
 obter_dados() {
-    curl -s "$API_URL"
+    curl -sS --max-time 20 "$API_URL" 2>/dev/null
 }
 
 # Função para calcular o saldo total
@@ -104,7 +119,20 @@ exibir_informacoes() {
 while true; do
     # Obter dados da API
     dados=$(obter_dados)
-    preco_atual=$(echo "$dados" | jq -r '.last')
+    codigo=$?
+    preco_atual=$(echo "$dados" | jq -r '.last // empty' 2>/dev/null)
+
+    # Se a cotação não veio, explica e tenta de novo, em vez de fazer contas com valor vazio
+    if [[ ! $preco_atual =~ ^[0-9]+(\.[0-9]+)?$ ]]; then
+        log "Não foi possível obter a cotação no cointradermonitor.com. Tentando de novo em 30 segundos."
+        if (( codigo != 0 )); then
+            explain_curl_error "$codigo" | sed 's/^/    /' >&2
+        else
+            echo "    O site respondeu, mas sem o preço. Ele pode estar fora do ar ou ter mudado o formato." >&2
+        fi
+        sleep 30
+        continue
+    fi
 
     # Verificar se a última operação foi um acerto
     if [[ -n "$ULTIMA_OPERACAO" ]]; then

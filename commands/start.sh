@@ -25,7 +25,8 @@ register_new_user() {
 	# Adicionar chat_id ao users_id no config.sh
 	sed -i "s/^users_id=(/users_id=(${chat_id} /" config.sh
 
-	# Criar arquivo do usuário
+	# Criar arquivo do usuário (a pasta users/ é criada se ainda não existir)
+	mkdir -p users || log "Não foi possível criar a pasta users/. Verifique se você tem permissão de escrita na pasta do bot."
 	user_file="users/${chat_id}"
 	echo "created_at='$(date)'" > "$user_file"
 	echo "tags=()" >> "$user_file"

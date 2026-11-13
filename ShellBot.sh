@@ -5908,6 +5908,13 @@ _EOF
 								${timeout:+-d timeout="$timeout"} \
 								${allowed_updates:+-d allowed_updates="$allowed_updates"})
 
+		# [btcsignal] Alteração local: se o Telegram responder com erro (ou não
+		# responder, por falta de internet), avisa e retorna 1. Sem isso o método
+		# retornava sucesso e o loop principal ficava repetindo sem parar.
+		if [[ $(jq -r '.ok' <<< "$jq_obj" 2>/dev/null) != true ]]; then
+			MessageError TG "$jq_obj"
+			return 1
+		fi
 
 		# Limpa as variáveis inicializadas.
 		unset $_VAR_INIT_; _VAR_INIT_=

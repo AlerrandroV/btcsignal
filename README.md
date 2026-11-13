@@ -54,22 +54,33 @@ A comunicação com o Telegram é feita pelo [ShellBot.sh](https://github.com/sh
    cd btcsignal
    ```
 
-2. Crie o seu bot falando com o [@BotFather](https://t.me/BotFather) no Telegram e guarde o token que ele te passar.
+> Pressa? Pode rodar `bash main.sh` direto: se faltar alguma coisa, o próprio bot mostra o passo a passo do que fazer.
 
-3. Crie um canal, adicione o bot como **administrador** (com permissão para publicar mensagens) e descubra o ID do canal. Ele costuma começar com `-100`.
-   Uma forma fácil: encaminhe uma mensagem do canal para o [@userinfobot](https://t.me/userinfobot) ou bot parecido.
+2. Crie o seu bot falando com o [@BotFather](https://t.me/BotFather) no Telegram (envie `/newbot`) e guarde o token que ele te passar.
 
-4. Copie o arquivo de exemplo e preencha com os seus dados:
+3. Copie o arquivo de exemplo e coloque o token nele:
 
    ```bash
    cp config.example.sh config.sh
    nano config.sh
    ```
 
+4. Crie um canal e adicione o bot como **administrador**, com permissão para publicar mensagens. Depois:
+   - envie uma mensagem qualquer no canal;
+   - abra o seu bot no Telegram e envie `/start`.
+
+5. Descubra o ID do canal e o seu ID de usuário:
+
    ```bash
-   bot_token="SEU_TOKEN_DO_BOTFATHER"
-   admins_id=(111111111)          # seu ID de usuário no Telegram
-   channel_id="-100XXXXXXXXXX"    # ID do canal
+   bash ids.sh
+   ```
+
+6. Preencha o resto do `config.sh`:
+
+   ```bash
+   bot_token="123456789:AAHk7x..."   # token do BotFather
+   admins_id=(123456789)             # seu ID de usuário (vários: separados por espaço)
+   channel_id="-1001234567890"       # ID do canal
    users_id=()
    ```
 
@@ -98,14 +109,28 @@ Para deixar rodando depois de fechar o terminal, você pode usar o `screen`, o `
 nohup bash main.sh > bot.log 2>&1 &
 ```
 
+## Se algo der errado
+
+Antes de iniciar, o bot confere tudo o que precisa e, se encontrar um problema, explica o motivo e como resolver:
+
+- programas que faltam instalar, com o comando certo para o seu sistema (Debian/Ubuntu, Termux, Fedora, Arch, macOS...);
+- `config.sh` que não existe, com erro de digitação ou ainda com os valores de exemplo;
+- token errado ou trocado no BotFather;
+- canal errado, ou bot que não é administrador do canal;
+- falta de internet ou Telegram bloqueado na rede.
+
+Com o bot rodando, os erros também aparecem explicados no terminal, com data e hora. Por exemplo: quando um site de cotação sai do ar, quando um administrador nunca enviou `/start` para o bot, ou quando há duas cópias do bot rodando com o mesmo token. Se um `/publi` falhar, o administrador recebe o motivo no próprio Telegram.
+
 ## Arquivos
 
 | Arquivo | O que faz |
 |---|---|
 | `main.sh` | Inicia o bot, o loop de sinais e trata os comandos recebidos |
 | `signals.sh` | Busca as cotações e monta a mensagem enviada ao canal |
+| `checks.sh` | Verificações antes de iniciar e explicações dos erros |
+| `ids.sh` | Mostra os IDs de quem falou com o bot e dos canais onde ele está |
 | `config.example.sh` | Modelo de configuração (copie para `config.sh`) |
-| `ShellBot.sh` | API em Bash para o Telegram ([shellscriptx/ShellBot](https://github.com/shellscriptx/ShellBot)) |
+| `ShellBot.sh` | API em Bash para o Telegram ([shellscriptx/ShellBot](https://github.com/shellscriptx/ShellBot)), com uma pequena alteração marcada com `[btcsignal]` |
 | `commands/` | Scripts dos comandos do bot (`/start`, ...) |
 | `trader.sh` | Experimento à parte: um simulador de compra/venda no terminal, sem dinheiro real |
 | `teste.sh` | Script de teste que encaminha as mensagens recebidas para os administradores |
