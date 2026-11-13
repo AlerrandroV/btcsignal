@@ -1,0 +1,6 @@
+# Configuração com token (nunca suba para o repositório)
+config.sh
+
+# Dados gerados em execução
+secret_names.sh
+users/
