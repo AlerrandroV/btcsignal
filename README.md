@@ -103,6 +103,16 @@ O bot avisa os administradores que foi iniciado e começa a publicar a cotação
 | `/publi Seu texto` | Administradores | Publica o texto no canal |
 | `/publi` respondendo a uma mensagem | Administradores | Publica a mensagem respondida no canal (fotos, vídeos etc. são encaminhados) |
 
+### Atualizar
+
+Para baixar a versão mais recente do código e já iniciar o bot:
+
+```bash
+bash update.sh
+```
+
+O `config.sh`, a pasta `users/` e o `secret_names.sh` não são alterados. Não precisa do `git`, só do `curl` e do `tar`. Se o bot já estiver rodando, encerre ele antes (`Ctrl+C`).
+
 Para deixar rodando depois de fechar o terminal, você pode usar o `screen`, o `tmux` ou simplesmente:
 
 ```bash
@@ -128,6 +138,7 @@ Com o bot rodando, os erros também aparecem explicados no terminal, com data e 
 | `main.sh` | Inicia o bot, o loop de sinais e trata os comandos recebidos |
 | `signals.sh` | Busca as cotações e monta a mensagem enviada ao canal |
 | `checks.sh` | Verificações antes de iniciar e explicações dos erros |
+| `update.sh` | Baixa a versão mais recente do código (sem mexer no `config.sh`) e inicia o bot |
 | `ids.sh` | Mostra os IDs de quem falou com o bot e dos canais onde ele está |
 | `config.example.sh` | Modelo de configuração (copie para `config.sh`) |
 | `ShellBot.sh` | API em Bash para o Telegram ([shellscriptx/ShellBot](https://github.com/shellscriptx/ShellBot)), com uma pequena alteração marcada com `[btcsignal]` |
