@@ -28,7 +28,7 @@ handle_command() {
 		"/stop")
 			source ./commands/stop.sh "${message_chat_id[$id]}"
 			;;
-		"/publi")
+		"/publi"|"/publi "*|"/publi@"*)
 			if [[ " ${admins_id[@]} " =~ " ${message_from_id[$id]} " ]]; then
 				source ./commands/publi.sh
 			fi

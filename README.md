@@ -85,6 +85,13 @@ bash main.sh
 
 O bot avisa os administradores que foi iniciado e começa a publicar a cotação no canal. Para encerrar, use `Ctrl+C`.
 
+### Comandos
+
+| Comando | Quem pode | O que faz |
+|---|---|---|
+| `/publi Seu texto` | Administradores | Publica o texto no canal |
+| `/publi` respondendo a uma mensagem | Administradores | Publica a mensagem respondida no canal (fotos, vídeos etc. são encaminhados) |
+
 Para deixar rodando depois de fechar o terminal, você pode usar o `screen`, o `tmux` ou simplesmente:
 
 ```bash
