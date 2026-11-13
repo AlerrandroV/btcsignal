@@ -9,8 +9,8 @@ source signals.sh
 ShellBot.init --token "$bot_token" --monitor
 
 # Mensagem inicial para os administradores
-for i in "${!admin_id[@]}"; do
-	ShellBot.sendMessage --chat_id "${admin_id[i]}" --text "✓ Bot iniciado com sucesso."
+for i in "${!admins_id[@]}"; do
+	ShellBot.sendMessage --chat_id "${admins_id[i]}" --text "✓ Bot iniciado com sucesso."
 done
 
 # Função principal que chama os scripts de comando
@@ -29,7 +29,7 @@ handle_command() {
 			source ./commands/stop.sh "${message_chat_id[$id]}"
 			;;
 		"/publi")
-			if [[ " ${admin_id[@]} " =~ " ${message_from_id[$id]} " ]]; then
+			if [[ " ${admins_id[@]} " =~ " ${message_from_id[$id]} " ]]; then
 				source ./commands/publi.sh
 			fi
 			;;
